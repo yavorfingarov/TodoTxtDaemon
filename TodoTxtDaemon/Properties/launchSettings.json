@@ -1,0 +1,12 @@
+﻿{
+    "profiles": {
+        "DEV": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "workingDirectory": "bin/Debug/net6.0",
+            "environmentVariables": {
+                "DOTNET_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}
