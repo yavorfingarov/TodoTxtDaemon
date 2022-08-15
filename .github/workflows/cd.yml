@@ -1,0 +1,86 @@
+name: CD
+
+on:
+  push:
+    branches: [ master ]
+    paths: 
+      - 'TodoTxtDaemon/**'
+
+env:
+  DOTNET_VERSION: 6.0.x
+  CSPROJ_PATH: TodoTxtDaemon/TodoTxtDaemon.csproj
+  APP_NAME: TodoTxtDaemon
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Get package version
+        id: get_package_version
+        run: echo "::set-output name=version::$(cat ./${{ env.CSPROJ_PATH }}} | grep -Po '(?<=Version>).*(?=</Version>)')"
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.CSPROJ_PATH }}}
+      - name: Create win-x64 package
+        run: dotnet publish --no-restore --configuration Release --output ./win-x64 --runtime win-x64 --no-self-contained ${{ env.CSPROJ_PATH }}
+      - name: Archive win-x64 package
+        uses: thedoctor0/zip-release@master
+        with:
+          type: zip
+          directory: ./win-x64
+          filename: ${{ env.APP_NAME }}-${{ steps.get_package_version.outputs.version }}-win-x64.zip
+      - name: Create win-x64-self-contained package
+        run: dotnet publish --no-restore --configuration Release --output ./win-x64-self-contained --runtime win-x64 --self-contained ${{ env.CSPROJ_PATH }}
+      - name: Archive win-x64-self-contained package
+        uses: thedoctor0/zip-release@master
+        with:
+          type: zip
+          directory: ./win-x64-self-contained
+          filename: ${{ env.APP_NAME }}-${{ steps.get_package_version.outputs.version }}-win-x64-self-contained.zip
+      - name: Create osx-x64 package
+        run: dotnet publish --no-restore --configuration Release --output ./osx-x64 --runtime osx-x64 --no-self-contained ${{ env.CSPROJ_PATH }}
+      - name: Archive osx-x64 package
+        uses: thedoctor0/zip-release@master
+        with:
+          type: zip
+          directory: ./osx-x64
+          filename: ${{ env.APP_NAME }}-${{ steps.get_package_version.outputs.version }}-osx-x64.zip
+      - name: Create osx-x64-self-contained package
+        run: dotnet publish --no-restore --configuration Release --output ./osx-x64-self-contained --runtime osx-x64 --self-contained ${{ env.CSPROJ_PATH }}
+      - name: Archive osx-x64-self-contained package
+        uses: thedoctor0/zip-release@master
+        with:
+          type: zip
+          directory: ./osx-x64-self-contained
+          filename: ${{ env.APP_NAME }}-${{ steps.get_package_version.outputs.version }}-osx-x64-self-contained.zip
+      - name: Create linux-x64 package
+        run: dotnet publish --no-restore --configuration Release --output ./linux-x64 --runtime linux-x64 --no-self-contained ${{ env.CSPROJ_PATH }}
+      - name: Archive linux-x64 package
+        uses: thedoctor0/zip-release@master
+        with:
+          type: zip
+          directory: ./linux-x64
+          filename: ${{ env.APP_NAME }}-${{ steps.get_package_version.outputs.version }}-linux-x64.zip
+      - name: Create linux-x64-self-contained package
+        run: dotnet publish --no-restore --configuration Release --output ./linux-x64-self-contained --runtime linux-x64 --self-contained ${{ env.CSPROJ_PATH }}
+      - name: Archive linux-x64-self-contained package
+        uses: thedoctor0/zip-release@master
+        with:
+          type: zip
+          directory: ./linux-x64-self-contained
+          filename: ${{ env.APP_NAME }}-${{ steps.get_package_version.outputs.version }}-linux-x64-self-contained.zip
+      - name: Generate release description
+        run: csplit ./CHANGELOG.md '/## \[/' {*} && tail -n +2 xx01 > release_description.md
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.get_package_version.outputs.version }}
+          artifacts: "**/*.zip"
+          bodyfile: release_description.md
+          token: ${{ secrets.GITHUB_TOKEN }}
