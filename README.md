@@ -12,7 +12,7 @@ This is a tiny daemon that monitors your [`todo.txt`](https://github.com/todotxt
 
 ## Installation
 
-Download the latest release for your OS and extract it somewhere on your hard drive. If you don't have the .NET 6 runtime installed, choose the `selfcontained` version.
+Download the latest release for your OS and extract it somewhere on your hard drive. If you don't have the .NET 6 runtime installed, choose the `self-contained` version.
 
 ## Usage
 
