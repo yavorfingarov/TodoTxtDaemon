@@ -20,13 +20,13 @@ jobs:
         uses: actions/checkout@v2
       - name: Get package version
         id: get_package_version
-        run: echo "::set-output name=version::$(cat ./${{ env.CSPROJ_PATH }}} | grep -Po '(?<=Version>).*(?=</Version>)')"
+        run: echo "::set-output name=version::$(cat ./${{ env.CSPROJ_PATH }} | grep -Po '(?<=Version>).*(?=</Version>)')"
       - name: Set up .NET
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Restore dependencies
-        run: dotnet restore ${{ env.CSPROJ_PATH }}}
+        run: dotnet restore ${{ env.CSPROJ_PATH }}
       - name: Create win-x64 package
         run: dotnet publish --no-restore --configuration Release --output ./win-x64 --runtime win-x64 --no-self-contained ${{ env.CSPROJ_PATH }}
       - name: Archive win-x64 package
