@@ -160,7 +160,8 @@ namespace TodoTxtDaemon.UnitTests
         private void VerifyCommonInvocations(int monitoringLogCalls = 1)
         {
             _LoggerMock.Verify(LogLevel.Information, "Monitoring...", Times.Exactly(monitoringLogCalls));
-            _LoggerMock.Verify(LogLevel.Information, "Application started. Current working directory: /test/path");
+            var version = typeof(Program).Assembly.GetName().Version?.ToString(3);
+            _LoggerMock.Verify(LogLevel.Information, $"TodoTxtDaemon {version} started. Current working directory: /test/path");
             _HostEnvironmentMock.Verify(h => h.ContentRootPath, Times.Once);
             _LifetimeMock.Verify(l => l.ApplicationStopped, Times.Once);
             _WatcherMock.Verify(w => w.IsTimeToRun(), Times.Once);

@@ -25,7 +25,8 @@ namespace TodoTxtDaemon
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _Lifetime.ApplicationStopped.Register(OnStop);
-            _Logger.LogInformation("Application started. Current working directory: {Path}", _HostEnvironment.ContentRootPath);
+            _Logger.LogInformation("TodoTxtDaemon {Version} started. Current working directory: {Path}",
+                GetType().Assembly.GetName().Version?.ToString(3), _HostEnvironment.ContentRootPath);
             _Logger.LogInformation("Monitoring...");
             while (!stoppingToken.IsCancellationRequested)
             {

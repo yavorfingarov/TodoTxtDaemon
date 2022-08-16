@@ -1,6 +1,7 @@
 # TodoTxtDaemon
 
-This is a tiny daemon that monitors your [`todo.txt`](https://github.com/todotxt/todo.txt) file and moves completed tasks to your `done.txt` file. 
+This is a tiny daemon that monitors your [todo.txt](https://github.com/todotxt/todo.txt) 
+file and moves completed tasks to your done.txt file. 
 
 ## Features
 
@@ -12,7 +13,9 @@ This is a tiny daemon that monitors your [`todo.txt`](https://github.com/todotxt
 
 ## Installation
 
-Download the latest release for your OS and extract it somewhere on your hard drive. If you don't have the .NET 6 runtime installed, choose the `self-contained` version.
+Download the [latest release](https://github.com/yavorfingarov/TodoTxtDaemon/releases) for your OS and 
+extract it somewhere on your hard drive. If you don't have the .NET 6 runtime installed, choose 
+the `self-contained` build.
 
 ## Usage
 
@@ -25,3 +28,8 @@ Set up the daemon to start at log on. Make sure it will run in the directory con
 * [Linux instructions](https://www.xmodulo.com/start-program-automatically-linux-desktop.html)
 
 Once the daemon is running, check `app.log` if everything works as expected.
+
+## Support
+
+If you spot any problems and/or have improvement ideas, please share them via
+the [issue tracker](https://github.com/yavorfingarov/TodoTxtDaemon/issues).
