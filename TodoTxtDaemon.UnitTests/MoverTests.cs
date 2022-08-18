@@ -16,15 +16,15 @@ namespace TodoTxtDaemon.UnitTests
 
         public MoverTests()
         {
+            _Today = DateTime.Today;
             _LoggerMock = new Mock<ILogger<Mover>>(MockBehavior.Strict);
-            _ConfigurationMock = new Mock<IConfiguration>(MockBehavior.Strict);
-            _DateTimeProviderMock = new Mock<DateTimeProvider>(MockBehavior.Strict);
-            _Mover = new Mover(_LoggerMock.Object, _ConfigurationMock.Object, _DateTimeProviderMock.Object);
-            _FilePaths = new HashSet<string>();
             _LoggerMock.Setup(LogLevel.Information);
+            _ConfigurationMock = new Mock<IConfiguration>(MockBehavior.Strict);
             _ConfigurationMock.Setup(c => c["TodoTxtPath"]).Returns("todo.txt");
             _ConfigurationMock.Setup(c => c["DoneTxtPath"]).Returns("done.txt");
-            _Today = DateTime.Today;
+            _DateTimeProviderMock = new Mock<DateTimeProvider>(MockBehavior.Strict);
+            _FilePaths = new HashSet<string>();
+            _Mover = new Mover(_LoggerMock.Object, _ConfigurationMock.Object, _DateTimeProviderMock.Object);
         }
 
         [Theory]

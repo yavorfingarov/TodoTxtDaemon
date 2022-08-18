@@ -4,19 +4,15 @@ namespace TodoTxtDaemon
     {
         private readonly ILogger<Worker> _Logger;
 
-        private readonly IHostEnvironment _HostEnvironment;
-
         private readonly IHostApplicationLifetime _Lifetime;
 
         private readonly IWatcher _Watcher;
 
         private readonly IMover _Mover;
 
-        public Worker(ILogger<Worker> logger, IHostEnvironment hostEnvironment,
-            IHostApplicationLifetime lifetime, IWatcher watcher, IMover mover)
+        public Worker(ILogger<Worker> logger, IHostApplicationLifetime lifetime, IWatcher watcher, IMover mover)
         {
             _Logger = logger;
-            _HostEnvironment = hostEnvironment;
             _Lifetime = lifetime;
             _Watcher = watcher;
             _Mover = mover;
@@ -24,9 +20,8 @@ namespace TodoTxtDaemon
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _Lifetime.ApplicationStopped.Register(OnStop);
-            _Logger.LogInformation("TodoTxtDaemon {Version} started. Current working directory: {Path}",
-                GetType().Assembly.GetName().Version?.ToString(3), _HostEnvironment.ContentRootPath);
+            _Logger.LogInformation("TodoTxtDaemon {Version} started. Process Id: {ProcessId}",
+                GetType().Assembly.GetName().Version?.ToString(3), Environment.ProcessId);
             _Logger.LogInformation("Monitoring...");
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -52,22 +47,17 @@ namespace TodoTxtDaemon
             _Lifetime.StopApplication();
         }
 
-        private void OnStop() => _Logger.LogInformation("Monitoring stopped.");
-
         private bool IsCriticalException(Exception exception)
         {
-            var isCritical = true;
+            var isCritical = false;
             switch (exception)
             {
                 case MoverException:
                     _Logger.LogError("{Message}", exception.Message);
-                    isCritical = false;
-                    break;
-                case WatcherException:
-                    _Logger.LogCritical("{Message}", exception.Message);
                     break;
                 default:
                     _Logger.LogCritical(exception, "Unhandled exception.");
+                    isCritical = true;
                     break;
             }
 
