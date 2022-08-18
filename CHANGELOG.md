@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0] - 2022-08-17
+### Added
+- Detailed instructions on how to set up the daemon to run at log on
+### Changed
+- Simplified configuration by using ini file
+### Fixed
+- Having wrong content root path when current working directory differs from the one containing the executable
+
 ## [1.0.1] - 2022-08-16
 ### Added
 - Support section to readme

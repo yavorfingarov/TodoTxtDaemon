@@ -1,9 +1,12 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Hosting;
 
 namespace TodoTxtDaemon.UnitTests
 {
     public sealed class WatcherTests : IDisposable
     {
+        private readonly Mock<IHostEnvironment> _HostEnvironmentMock;
+
         private readonly Mock<DateTimeProvider> _DateTimeProviderMock;
 
         private readonly IWatcher _Watcher;
@@ -12,28 +15,19 @@ namespace TodoTxtDaemon.UnitTests
 
         public WatcherTests()
         {
-            _DateTimeProviderMock = new Mock<DateTimeProvider>(MockBehavior.Strict);
-            _Watcher = new Watcher(_DateTimeProviderMock.Object);
             _Today = DateTime.Today;
+            _HostEnvironmentMock = new Mock<IHostEnvironment>(MockBehavior.Strict);
+            _HostEnvironmentMock.Setup(h => h.ContentRootPath).Returns("");
+            _DateTimeProviderMock = new Mock<DateTimeProvider>(MockBehavior.Strict);
             _DateTimeProviderMock.Setup(d => d.Today).Returns(_Today);
-        }
-
-        [Fact]
-        public void IsTimeToRun_Throws_WhenStateJsonIsLocked()
-        {
-            using var fileStream = File.Open("state.json", FileMode.OpenOrCreate);
-
-            var exception = Assert.Throws<WatcherException>(() => _Watcher.IsTimeToRun());
-            Assert.Equal("Encountered an unexpected error. " +
-                    "Please make sure the daemon is running in the directory containing the executable.",
-                    exception.Message);
-            VerifyNoOtherCalls();
+            _Watcher = new Watcher(_HostEnvironmentMock.Object, _DateTimeProviderMock.Object);
         }
 
         [Fact]
         public void IsTimeToRun_ReturnsTrue_WhenStateJsonIsMissing()
         {
             Assert.True(_Watcher.IsTimeToRun());
+            _HostEnvironmentMock.Verify(h => h.ContentRootPath, Times.Once);
             _DateTimeProviderMock.Verify(d => d.Today, Times.Once);
             VerifyNoOtherCalls();
         }
@@ -48,6 +42,7 @@ namespace TodoTxtDaemon.UnitTests
             Write(new Watcher.State(lastRun));
 
             Assert.True(_Watcher.IsTimeToRun());
+            _HostEnvironmentMock.Verify(h => h.ContentRootPath, Times.Once);
             CheckCachedState();
             VerifyNoOtherCalls();
         }
@@ -62,20 +57,8 @@ namespace TodoTxtDaemon.UnitTests
             Write(new Watcher.State(lastRun));
 
             Assert.False(_Watcher.IsTimeToRun());
+            _HostEnvironmentMock.Verify(h => h.ContentRootPath, Times.Once);
             CheckCachedState();
-            VerifyNoOtherCalls();
-        }
-
-        [Fact]
-        public void MarkRun_Throws_WhenStateJsonIsLocked()
-        {
-            using var fileStream = File.Open("state.json", FileMode.OpenOrCreate);
-
-            var exception = Assert.Throws<WatcherException>(_Watcher.MarkRun);
-            Assert.Equal("Encountered an unexpected error. " +
-                    "Please make sure the daemon is running in the directory containing the executable.",
-                    exception.Message);
-            _DateTimeProviderMock.Verify(d => d.Today, Times.Once);
             VerifyNoOtherCalls();
         }
 
@@ -86,6 +69,7 @@ namespace TodoTxtDaemon.UnitTests
 
             var state = JsonSerializer.Deserialize<Watcher.State>(File.ReadAllText("state.json"));
             Assert.Equal(_Today, state?.LastRun);
+            _HostEnvironmentMock.Verify(h => h.ContentRootPath, Times.Once);
             _DateTimeProviderMock.Verify(d => d.Today, Times.Once);
             VerifyNoOtherCalls();
         }
@@ -114,6 +98,7 @@ namespace TodoTxtDaemon.UnitTests
 
         private void VerifyNoOtherCalls()
         {
+            _HostEnvironmentMock.VerifyNoOtherCalls();
             _DateTimeProviderMock.VerifyNoOtherCalls();
         }
     }

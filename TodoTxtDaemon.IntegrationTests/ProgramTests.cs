@@ -5,13 +5,13 @@ namespace TodoTxtDaemon.IntegrationTests
 {
     public sealed class ProgramTests : IDisposable
     {
-        private readonly string _InitialAppSettingsJson;
+        private readonly string _InitialAppSettingsIni;
 
         private Task? _Main;
 
         public ProgramTests()
         {
-            _InitialAppSettingsJson = File.ReadAllText("appsettings.json");
+            _InitialAppSettingsIni = File.ReadAllText("appsettings.ini");
         }
 
         [Fact]
@@ -25,8 +25,7 @@ namespace TodoTxtDaemon.IntegrationTests
         [Fact]
         public void Main_MovesTasks_WithInitialState()
         {
-            var appSettings = new { TodoTxtPath = "todo.txt", DoneTxtPath = "done.txt" };
-            File.WriteAllText("appsettings.json", JsonSerializer.Serialize(appSettings));
+            File.WriteAllLines("appsettings.ini", new[] { "TodoTxtPath=todo.txt", "DoneTxtPath=done.txt" });
             File.WriteAllLines("todo.txt", new[] { "task 1", "x task 2", "x task 3", "task 4" });
             File.WriteAllLines("done.txt", new[] { "0000-00-00 task 5", "0000-00-00 task 6" });
 
@@ -45,9 +44,8 @@ namespace TodoTxtDaemon.IntegrationTests
         [Fact]
         public void Main_MovesTasks_WhenLastRunIsThreeDaysAgo()
         {
-            var appSettings = new { TodoTxtPath = "todo.txt", DoneTxtPath = "done.txt" };
+            File.WriteAllLines("appsettings.ini", new[] { "TodoTxtPath=todo.txt", "DoneTxtPath=done.txt" });
             File.WriteAllText("state.json", JsonSerializer.Serialize(new Watcher.State(DateTime.Today.AddDays(-3))));
-            File.WriteAllText("appsettings.json", JsonSerializer.Serialize(appSettings));
             File.WriteAllLines("todo.txt", new[] { "task 1", "x task 2", "x task 3", "task 4" });
             File.WriteAllLines("done.txt", new[] { "0000-00-00 task 5", "0000-00-00 task 6" });
 
@@ -66,9 +64,8 @@ namespace TodoTxtDaemon.IntegrationTests
         [Fact]
         public void Main_DoesNotMoveTasks_WhenLastRunIsToday()
         {
-            var appSettings = new { TodoTxtPath = "todo.txt", DoneTxtPath = "done.txt" };
+            File.WriteAllLines("appsettings.ini", new[] { "TodoTxtPath=todo.txt", "DoneTxtPath=done.txt" });
             File.WriteAllText("state.json", JsonSerializer.Serialize(new Watcher.State(DateTime.Today)));
-            File.WriteAllText("appsettings.json", JsonSerializer.Serialize(appSettings));
             var todoTasks = new[] { "task 1", "x task 2", "x task 3", "task 4" };
             var doneTasks = new[] { "0000-00-00 task 5", "0000-00-00 task 6" };
             File.WriteAllLines("todo.txt", todoTasks);
@@ -93,7 +90,7 @@ namespace TodoTxtDaemon.IntegrationTests
 
         public void Dispose()
         {
-            File.WriteAllText("appsettings.json", _InitialAppSettingsJson);
+            File.WriteAllText("appsettings.ini", _InitialAppSettingsIni);
             foreach (var filePath in new[] { "todo.txt", "done.txt", "app.log", "state.json" })
             {
                 if (File.Exists(filePath))

@@ -19,13 +19,35 @@ the `self-contained` build.
 
 ## Usage
 
-Edit `appsettings.json` and add the paths of your `todo.txt` and `done.txt` files.
+Edit `appsettings.ini` and add the paths of your `todo.txt` and `done.txt` files.
 
-Set up the daemon to start at log on. Make sure it will run in the directory containing the executable.
+Set up the daemon to start at log on:
 
-* [Windows instructions](https://www.wintips.org/how-to-start-a-program-at-startup-with-task-scheduler/)
-* [MacOS instructions](https://www.idownloadblog.com/2015/03/24/apps-launch-system-startup-mac/)
-* [Linux instructions](https://www.xmodulo.com/start-program-automatically-linux-desktop.html)
+### Windows
+
+* Open _Administrative Tools > Task Scheduler_
+* In the _Actions_ panel, click _Create Basic Task_
+* Enter a name and click _Next_
+* Select _When I log on_ and click _Next_
+* Select _Start a program_ and click _Next_
+* In the _Program/script_ field, locate the `TodoTxtDaemon.exe` and click _Next_
+* Select _Open the Properties dialog..._ and click _Finish_
+* Select _Run whether user is logged on or not_ and select _Do not store password..._
+* In the _Conditions_ tab, unselect _Start the task only if the computer is on AC power_
+* In the _Settings_ tab, unselect _Stop the task if it runs longer..._
+
+### MacOS
+
+* Open _System Preferences > Users & Groups_
+* In the _Login Items_ tab, click on the lock icon and enter your admin password
+* Click _+_ and locate the `TodoTxtDaemon` executable
+
+### Linux
+
+* _(GNOME, Cinnamon, MATE, Unity)_ Open _Startup Applications Preferences_
+* _(KDE)_ Open _System Settings > Startup and Shutdown_ and select the _Autostart_ panel
+* _(Xfce)_ Open _Settings Manager > Session and Startup_ and select the _Application Autostart_ tab
+* Add the `TodoTxtDaemon` executable
 
 Once the daemon is running, check `app.log` if everything works as expected.
 

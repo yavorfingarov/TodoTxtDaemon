@@ -9,29 +9,34 @@ namespace TodoTxtDaemon
         void MarkRun();
     }
 
-    public class WatcherException : Exception
-    {
-        public WatcherException(string message) : base(message)
-        {
-        }
-    }
-
     public class Watcher : IWatcher
     {
         private readonly DateTimeProvider _DateTimeProvider;
 
+        private readonly string _StateJsonPath;
+
         private DateTime? _LastRun;
 
-        public Watcher(DateTimeProvider dateTimeProvider)
+        public Watcher(IHostEnvironment environment, DateTimeProvider dateTimeProvider)
         {
             _DateTimeProvider = dateTimeProvider;
+            _StateJsonPath = Path.Combine(environment.ContentRootPath, "state.json");
         }
 
         public bool IsTimeToRun()
         {
             if (_LastRun == null)
             {
-                _LastRun = File.Exists("state.json") ? GetLastRunDate() : DateTime.MinValue;
+                if (File.Exists(_StateJsonPath))
+                {
+                    var stateJson = File.ReadAllText(_StateJsonPath);
+                    var state = JsonSerializer.Deserialize<State>(stateJson);
+                    _LastRun = state!.LastRun;
+                }
+                else
+                {
+                    _LastRun = DateTime.MinValue;
+                }
             }
 
             return _DateTimeProvider.Today > _LastRun;
@@ -41,32 +46,7 @@ namespace TodoTxtDaemon
         {
             _LastRun = _DateTimeProvider.Today;
             var stateJson = JsonSerializer.Serialize(new State(_LastRun.Value));
-            try
-            {
-                File.WriteAllText("state.json", stateJson);
-            }
-            catch (Exception)
-            {
-                throw new WatcherException("Encountered an unexpected error. " +
-                    "Please make sure the daemon is running in the directory containing the executable.");
-            }
-        }
-
-        private static DateTime GetLastRunDate()
-        {
-            string stateJson;
-            try
-            {
-                stateJson = File.ReadAllText("state.json");
-            }
-            catch (Exception)
-            {
-                throw new WatcherException("Encountered an unexpected error. " +
-                    "Please make sure the daemon is running in the directory containing the executable.");
-            }
-            var state = JsonSerializer.Deserialize<State>(stateJson);
-
-            return state!.LastRun;
+            File.WriteAllText(_StateJsonPath, stateJson);
         }
 
         public record State(DateTime LastRun);

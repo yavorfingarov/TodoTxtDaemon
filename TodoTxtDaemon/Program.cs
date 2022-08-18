@@ -7,6 +7,12 @@ namespace TodoTxtDaemon
         public static void Main()
         {
             var host = Host.CreateDefaultBuilder()
+                .UseContentRoot(Path.GetDirectoryName(typeof(Program).Assembly.Location))
+                .ConfigureAppConfiguration(configuration =>
+                {
+                    configuration.Sources.Clear();
+                    configuration.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true);
+                })
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();
