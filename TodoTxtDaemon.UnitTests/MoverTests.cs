@@ -137,7 +137,7 @@ namespace TodoTxtDaemon.UnitTests
             Assert.Equal(new[] { $"{timestamp} task 2", $"{timestamp} task 4" }, File.ReadAllLines("done.txt"));
             _DateTimeProviderMock.Verify(d => d.Adjust(It.IsAny<DateTime>()), Times.Once);
             _ConfigurationMock.Verify("TodoTxtPath", "DoneTxtPath");
-            _LoggerMock.Verify(LogLevel.Information, "Moved 2 tasks.");
+            _LoggerMock.Verify(LogLevel.Information, "Moved 2 task(s).");
             VerifyNoOtherCalls();
         }
 
@@ -162,7 +162,7 @@ namespace TodoTxtDaemon.UnitTests
                 File.ReadAllLines("done.txt"));
             _DateTimeProviderMock.Verify(d => d.Adjust(It.IsAny<DateTime>()), Times.Once);
             _ConfigurationMock.Verify("TodoTxtPath", "DoneTxtPath");
-            _LoggerMock.Verify(LogLevel.Information, "Moved 2 tasks.");
+            _LoggerMock.Verify(LogLevel.Information, "Moved 2 task(s).");
             VerifyNoOtherCalls();
         }
 

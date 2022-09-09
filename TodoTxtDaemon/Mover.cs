@@ -49,7 +49,7 @@
                 .Concat(ReadAllLines(doneTxtPath));
             WriteAllLines(doneTxtPath, doneTasks);
             WriteAllLines(todoTxtPath, tasks.Where(t => !t.StartsWith("x ")));
-            _Logger.LogInformation("Moved {TaskCount} tasks.", tasksToMove.Count);
+            _Logger.LogInformation("Moved {TaskCount} task(s).", tasksToMove.Count);
         }
 
         private string GetConfigurationValue(string key)
