@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.1] - 2022-09-09
+### Security
+- Updated dependancies
+
 ## [1.1.0] - 2022-08-17
 ### Added
 - Detailed instructions on how to set up the daemon to run at log on
