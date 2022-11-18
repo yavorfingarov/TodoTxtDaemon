@@ -7,7 +7,7 @@ on:
       - 'TodoTxtDaemon/**'
 
 env:
-  DOTNET_VERSION: 6.0.x
+  DOTNET_VERSION: 7.0.x
   CSPROJ_PATH: TodoTxtDaemon/TodoTxtDaemon.csproj
   APP_NAME: TodoTxtDaemon
 

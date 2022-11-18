@@ -7,7 +7,7 @@ namespace TodoTxtDaemon
         public static void Main()
         {
             var host = Host.CreateDefaultBuilder()
-                .UseContentRoot(Path.GetDirectoryName(typeof(Program).Assembly.Location))
+                .UseContentRoot(Path.GetDirectoryName(typeof(Program).Assembly.Location) ?? Directory.GetCurrentDirectory())
                 .ConfigureAppConfiguration(configuration =>
                 {
                     configuration.Sources.Clear();
