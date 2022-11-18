@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 env:
-  DOTNET_VERSION: 6.0.x
+  DOTNET_VERSION: 7.0.x
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
       - name: Run tests
         run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
       - name: Generate test coverage report
-        uses: danielpalme/ReportGenerator-GitHub-Action@5.1.10
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.1.11
         with:
           reports: '**/coverage.cobertura.xml'
           targetdir: TestCoverageReport

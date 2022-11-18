@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.0] - 2022-11-18
+### Changed
+- Migrated to .NET 7
+- Improved log layout
+
 ## [1.1.1] - 2022-09-09
 ### Security
 - Updated dependancies

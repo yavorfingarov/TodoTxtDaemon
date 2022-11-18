@@ -14,7 +14,7 @@ file and moves completed tasks to your done.txt file.
 ## Installation
 
 Download the [latest release](https://github.com/yavorfingarov/TodoTxtDaemon/releases) for your OS and 
-extract it somewhere on your hard drive. If you don't have the .NET 6 runtime installed, choose 
+extract it somewhere on your hard drive. If you don't have the .NET 7 runtime installed, choose 
 the `self-contained` build.
 
 ## Usage
