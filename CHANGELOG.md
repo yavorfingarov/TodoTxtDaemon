@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.1] - 2022-11-26
+### Added
+- Code analysis
+
 ## [1.2.0] - 2022-11-18
 ### Changed
 - Migrated to .NET 7
