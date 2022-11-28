@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.2] - 2022-11-28
+### Security
+- Updated dependancies
+
 ## [1.2.1] - 2022-11-26
 ### Added
 - Code analysis
