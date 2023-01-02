@@ -1,4 +1,6 @@
-﻿namespace TodoTxtDaemon
+﻿using System.Globalization;
+
+namespace TodoTxtDaemon
 {
     public interface IMover
     {
@@ -34,22 +36,22 @@
             var tasks = ReadAllLines(todoTxtPath)
                 .Select(t => t.Trim());
             var tasksToMove = tasks
-                .Where(t => t.StartsWith("x "))
+                .Where(t => t.StartsWith("x ", StringComparison.InvariantCulture))
                 .ToList();
             if (!tasksToMove.Any())
             {
-                _Logger.LogInformation("No tasks to move.");
+                _Logger.LogNoTasksToMove();
 
                 return;
             }
             var lastWriteTime = GetLastWriteTime(todoTxtPath);
-            var timestamp = _DateTimeProvider.Adjust(lastWriteTime).ToString("yyyy-MM-dd");
+            var timestamp = _DateTimeProvider.Adjust(lastWriteTime).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             var doneTasks = tasksToMove
                 .Select(t => $"{timestamp} {t[2..].Trim()}")
                 .Concat(ReadAllLines(doneTxtPath));
             WriteAllLines(doneTxtPath, doneTasks);
-            WriteAllLines(todoTxtPath, tasks.Where(t => !t.StartsWith("x ")));
-            _Logger.LogInformation("Moved {TaskCount} task(s).", tasksToMove.Count);
+            WriteAllLines(todoTxtPath, tasks.Where(t => !t.StartsWith("x ", StringComparison.InvariantCulture)));
+            _Logger.LogMovedTasks(tasksToMove.Count);
         }
 
         private string GetConfigurationValue(string key)
@@ -97,6 +99,27 @@
             {
                 throw new MoverException(ex.Message);
             }
+        }
+    }
+
+    internal static partial class LoggerExtensions
+    {
+        private static readonly Action<ILogger, Exception?> _NoTasksToMove = LoggerMessage.Define(
+            LogLevel.Information, default,
+            "No tasks to move.");
+
+        private static readonly Action<ILogger, int, Exception?> _MovedTasks = LoggerMessage.Define<int>(
+            LogLevel.Information, default,
+            "Moved {TaskCount} task(s).");
+
+        public static void LogNoTasksToMove(this ILogger logger)
+        {
+            _NoTasksToMove(logger, null);
+        }
+
+        public static void LogMovedTasks(this ILogger logger, int taskCount)
+        {
+            _MovedTasks(logger, taskCount, null);
         }
     }
 }

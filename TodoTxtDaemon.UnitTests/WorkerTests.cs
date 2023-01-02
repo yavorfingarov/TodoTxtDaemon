@@ -17,6 +17,8 @@ namespace TodoTxtDaemon.UnitTests
         public WorkerTests()
         {
             _LoggerMock = new Mock<ILogger<Worker>>(MockBehavior.Strict);
+            _LoggerMock.Setup(mbox => mbox.IsEnabled(It.IsAny<LogLevel>()))
+                .Returns(true);
             _LoggerMock.Setup(LogLevel.Information);
             _LoggerMock.Setup(LogLevel.Error);
             _LoggerMock.Setup(LogLevel.Critical);
@@ -125,6 +127,7 @@ namespace TodoTxtDaemon.UnitTests
 
         private void VerifyCommonInvocations(int monitoringLogCalls = 1)
         {
+            _LoggerMock.Verify(m => m.IsEnabled(It.IsAny<LogLevel>()), Times.AtLeastOnce);
             _LoggerMock.Verify(LogLevel.Information, "Monitoring...", Times.Exactly(monitoringLogCalls));
             var version = typeof(Program).Assembly.GetName().Version?.ToString(3);
             _LoggerMock.Verify(LogLevel.Information, $"TodoTxtDaemon {version} started. Process Id: ");

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.3] - 2023-01-02
+### Fixed
+- Improved logging performance
+
 ## [1.2.2] - 2022-11-28
 ### Security
 - Updated dependancies
