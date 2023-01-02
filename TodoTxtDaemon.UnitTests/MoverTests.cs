@@ -18,6 +18,8 @@ namespace TodoTxtDaemon.UnitTests
         {
             _Today = DateTime.Today;
             _LoggerMock = new Mock<ILogger<Mover>>(MockBehavior.Strict);
+            _LoggerMock.Setup(mbox => mbox.IsEnabled(It.IsAny<LogLevel>()))
+                .Returns(true);
             _LoggerMock.Setup(LogLevel.Information);
             _ConfigurationMock = new Mock<IConfiguration>(MockBehavior.Strict);
             _ConfigurationMock.Setup(c => c["TodoTxtPath"]).Returns("todo.txt");
@@ -93,6 +95,7 @@ namespace TodoTxtDaemon.UnitTests
             Assert.Equal(lastWriteTime, File.GetLastWriteTime("done.txt"));
             Assert.Equal(Enumerable.Empty<string>(), File.ReadAllLines("done.txt"));
             _ConfigurationMock.Verify("TodoTxtPath", "DoneTxtPath");
+            _LoggerMock.Verify(m => m.IsEnabled(LogLevel.Information), Times.Once);
             _LoggerMock.Verify(LogLevel.Information, "No tasks to move.");
             VerifyNoOtherCalls();
         }
@@ -133,10 +136,11 @@ namespace TodoTxtDaemon.UnitTests
             Assert.True(DateTime.Now - File.GetLastWriteTime("todo.txt") < TimeSpan.FromSeconds(2));
             Assert.Equal(new[] { "task 1", "task 3", "task x test", "task 5" }, File.ReadAllLines("todo.txt"));
             Assert.True(DateTime.Now - File.GetLastWriteTime("done.txt") < TimeSpan.FromSeconds(2));
-            var timestamp = _Today.AddDays(-2).ToString("yyyy-MM-dd");
+            var timestamp = _Today.AddDays(-2).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             Assert.Equal(new[] { $"{timestamp} task 2", $"{timestamp} task 4" }, File.ReadAllLines("done.txt"));
             _DateTimeProviderMock.Verify(d => d.Adjust(It.IsAny<DateTime>()), Times.Once);
             _ConfigurationMock.Verify("TodoTxtPath", "DoneTxtPath");
+            _LoggerMock.Verify(m => m.IsEnabled(LogLevel.Information), Times.Once);
             _LoggerMock.Verify(LogLevel.Information, "Moved 2 task(s).");
             VerifyNoOtherCalls();
         }
@@ -147,7 +151,7 @@ namespace TodoTxtDaemon.UnitTests
             var tasks = new[] { "task 1", "x task 2", "task 3", "  x task 4  ", "task x test", "task 5" };
             var todoTxtLastWriteTime = _Today.AddDays(-3).AddHours(19);
             var doneTxtLastWriteTime = todoTxtLastWriteTime.AddDays(-1);
-            var oldTimestamp = doneTxtLastWriteTime.ToString("yyyy-MM-dd");
+            var oldTimestamp = doneTxtLastWriteTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             Write("todo.txt", tasks, todoTxtLastWriteTime);
             Write("done.txt", new[] { $"{oldTimestamp} task 9", $"{oldTimestamp} task 7" }, doneTxtLastWriteTime);
             _DateTimeProviderMock.Setup(d => d.Adjust(todoTxtLastWriteTime)).Returns(_Today.AddDays(-2));
@@ -157,11 +161,12 @@ namespace TodoTxtDaemon.UnitTests
             Assert.True(DateTime.Now - File.GetLastWriteTime("todo.txt") < TimeSpan.FromSeconds(2));
             Assert.Equal(new[] { "task 1", "task 3", "task x test", "task 5" }, File.ReadAllLines("todo.txt"));
             Assert.True(DateTime.Now - File.GetLastWriteTime("done.txt") < TimeSpan.FromSeconds(2));
-            var newTimestamp = _Today.AddDays(-2).ToString("yyyy-MM-dd");
+            var newTimestamp = _Today.AddDays(-2).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             Assert.Equal(new[] { $"{newTimestamp} task 2", $"{newTimestamp} task 4", $"{oldTimestamp} task 9", $"{oldTimestamp} task 7" },
                 File.ReadAllLines("done.txt"));
             _DateTimeProviderMock.Verify(d => d.Adjust(It.IsAny<DateTime>()), Times.Once);
             _ConfigurationMock.Verify("TodoTxtPath", "DoneTxtPath");
+            _LoggerMock.Verify(m => m.IsEnabled(LogLevel.Information), Times.Once);
             _LoggerMock.Verify(LogLevel.Information, "Moved 2 task(s).");
             VerifyNoOtherCalls();
         }
