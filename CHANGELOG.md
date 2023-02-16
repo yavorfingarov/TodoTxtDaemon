@@ -4,7 +4,7 @@
 ### Added
 - Deterministic build
 ### Fixed
-- Updated dependancies
+- Updated dependencies
 
 ## [1.2.3] - 2023-01-02
 ### Fixed
@@ -12,7 +12,7 @@
 
 ## [1.2.2] - 2022-11-28
 ### Fixed
-- Updated dependancies
+- Updated dependencies
 
 ## [1.2.1] - 2022-11-26
 ### Added
@@ -25,7 +25,7 @@
 
 ## [1.1.1] - 2022-09-09
 ### Fixed
-- Updated dependancies
+- Updated dependencies
 
 ## [1.1.0] - 2022-08-17
 ### Added
