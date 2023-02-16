@@ -1,4 +1,0 @@
-stryker-config:
-  test-projects: [ 'TodoTxtDaemon.UnitTests/TodoTxtDaemon.UnitTests.csproj' ]
-  mutate: [ '!**/TodoTxtDaemon/Program.cs' ]
-  reporters: [ 'html', 'dots' ]

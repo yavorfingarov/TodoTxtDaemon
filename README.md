@@ -1,6 +1,14 @@
 # TodoTxtDaemon
 
-This is a tiny daemon that monitors your [todo.txt](https://github.com/todotxt/todo.txt) 
+[![release](https://img.shields.io/github/v/release/yavorfingarov/TodoTxtDaemon)](https://github.com/yavorfingarov/TodoTxtDaemon/releases)
+[![downloads](https://img.shields.io/github/downloads/yavorfingarov/TodoTxtDaemon/total?color=blue)](https://github.com/yavorfingarov/TodoTxtDaemon/releases)
+[![cd](https://img.shields.io/github/actions/workflow/status/yavorfingarov/TodoTxtDaemon/cd.yml?branch=master&label=cd)](https://github.com/yavorfingarov/TodoTxtDaemon/actions/workflows/cd.yml?query=branch%3Amaster)
+[![codeql](https://img.shields.io/github/actions/workflow/status/yavorfingarov/TodoTxtDaemon/codeql.yml?branch=master&label=codeql)](https://github.com/yavorfingarov/TodoTxtDaemon/actions/workflows/codeql.yml?query=branch%3Amaster)
+[![loc](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/yavorfingarov/7a452b2e1203da1c42a40281ad043fd3/raw/lines-of-code.json)](https://github.com/yavorfingarov/TodoTxtDaemon/actions/workflows/cd.yml?query=branch%3Amaster)
+[![test coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/yavorfingarov/7a452b2e1203da1c42a40281ad043fd3/raw/test-coverage.json)](https://github.com/yavorfingarov/TodoTxtDaemon/actions/workflows/cd.yml?query=branch%3Amaster)
+[![mutation score](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/yavorfingarov/7a452b2e1203da1c42a40281ad043fd3/raw/mutation-score.json)](https://github.com/yavorfingarov/TodoTxtDaemon/actions/workflows/cd.yml?query=branch%3Amaster)
+
+TodoTxtDaemon is a tiny daemon that monitors your [todo.txt](https://github.com/todotxt/todo.txt) 
 file and moves completed tasks to your done.txt file. 
 
 ## Features
@@ -51,7 +59,13 @@ Set up the daemon to start at log on:
 
 Once the daemon is running, check `app.log` if everything works as expected.
 
-## Support
+## Additional resources
 
-If you spot any problems and/or have improvement ideas, please share them via
-the [issue tracker](https://github.com/yavorfingarov/TodoTxtDaemon/issues).
+* [Changelog](https://github.com/yavorfingarov/TodoTxtDaemon/blob/master/CHANGELOG.md)
+
+* [License](https://github.com/yavorfingarov/TodoTxtDaemon/blob/master/LICENSE)
+
+## Help and support
+
+For bug reports and feature requests, please use the [issue tracker](https://github.com/yavorfingarov/TodoTxtDaemon/issues).
+For questions, ideas and other topics, please check the [discussions](https://github.com/yavorfingarov/TodoTxtDaemon/discussions).
