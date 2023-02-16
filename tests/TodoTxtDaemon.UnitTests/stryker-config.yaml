@@ -1,0 +1,3 @@
+stryker-config:
+  mutate: [ '!**/TodoTxtDaemon/Program.cs' ]
+  reporters: [ 'html', 'markdown' ]

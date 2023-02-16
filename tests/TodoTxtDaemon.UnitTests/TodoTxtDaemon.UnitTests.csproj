@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TodoTxtDaemon\TodoTxtDaemon.csproj" />
+    <ProjectReference Include="..\..\src\TodoTxtDaemon\TodoTxtDaemon.csproj" />
   </ItemGroup>
 
   <ItemGroup>

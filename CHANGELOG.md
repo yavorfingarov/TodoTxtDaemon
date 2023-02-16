@@ -1,12 +1,18 @@
 # Changelog
 
+## [1.2.4] - 2023-02-16
+### Added
+- Deterministic build
+### Fixed
+- Updated dependencies
+
 ## [1.2.3] - 2023-01-02
 ### Fixed
 - Improved logging performance
 
 ## [1.2.2] - 2022-11-28
-### Security
-- Updated dependancies
+### Fixed
+- Updated dependencies
 
 ## [1.2.1] - 2022-11-26
 ### Added
@@ -18,8 +24,8 @@
 - Improved log layout
 
 ## [1.1.1] - 2022-09-09
-### Security
-- Updated dependancies
+### Fixed
+- Updated dependencies
 
 ## [1.1.0] - 2022-08-17
 ### Added
