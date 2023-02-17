@@ -90,7 +90,8 @@ namespace TodoTxtDaemon.IntegrationTests
         public void Dispose()
         {
             File.WriteAllText("appsettings.ini", _InitialAppSettingsIni);
-            foreach (var filePath in new[] { "todo.txt", "done.txt", "app.log", "state.json" })
+            var filePaths = new[] { "todo.txt", "done.txt", "app.log", "state.json" };
+            foreach (var filePath in filePaths)
             {
                 if (File.Exists(filePath))
                 {
@@ -109,7 +110,8 @@ namespace TodoTxtDaemon.IntegrationTests
         {
             Assert.Equal(taskStatus, _Main?.Status);
             Assert.True(File.Exists("app.log"));
-            Assert.NotEqual(0, new FileInfo("app.log").Length);
+            var fileInfo = new FileInfo("app.log");
+            Assert.NotEqual(0, fileInfo.Length);
         }
     }
 }

@@ -8,18 +8,17 @@
                 It.IsAny<Exception>(), It.IsAny<Func<It.IsAnyType, Exception?, string>>()));
         }
 
-        public static void Verify<T>(this Mock<ILogger<T>> logger, LogLevel logLevel, string messagePart,
-            Exception? exception = null)
+        public static void Verify<T>(this Mock<ILogger<T>> logger, LogLevel logLevel, string message, Exception? exception = null)
         {
             logger.Verify(l => l.Log(logLevel, It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(messagePart)),
+                It.Is<It.IsAnyType>((v, t) => v.ToString()! == message),
                 exception, It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
-        public static void Verify<T>(this Mock<ILogger<T>> logger, LogLevel logLevel, string messagePart, Times times)
+        public static void Verify<T>(this Mock<ILogger<T>> logger, LogLevel logLevel, string message, Times times)
         {
             logger.Verify(l => l.Log(logLevel, It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(messagePart)),
+                It.Is<It.IsAnyType>((v, t) => v.ToString()! == message),
                 null, It.IsAny<Func<It.IsAnyType, Exception?, string>>()), times);
         }
 

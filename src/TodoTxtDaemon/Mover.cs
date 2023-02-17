@@ -110,7 +110,7 @@ namespace TodoTxtDaemon
 
         private static readonly Action<ILogger, int, Exception?> _MovedTasks = LoggerMessage.Define<int>(
             LogLevel.Information, default,
-            "Moved {TaskCount} task(s).");
+            "Moved tasks. Count: {TaskCount}");
 
         public static void LogNoTasksToMove(this ILogger logger)
         {
