@@ -6,6 +6,9 @@
 
         public virtual DateTime Today => Adjust(Now);
 
-        public virtual DateTime Adjust(DateTime dateTime) => dateTime.AddHours(-3).Date;
+        public virtual DateTime Adjust(DateTime dateTime)
+        {
+            return dateTime.AddHours(-3).Date;
+        }
     }
 }

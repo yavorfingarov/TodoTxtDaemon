@@ -141,7 +141,7 @@ namespace TodoTxtDaemon.UnitTests
             _DateTimeProviderMock.Verify(d => d.Adjust(It.IsAny<DateTime>()), Times.Once);
             _ConfigurationMock.Verify("TodoTxtPath", "DoneTxtPath");
             _LoggerMock.Verify(m => m.IsEnabled(LogLevel.Information), Times.Once);
-            _LoggerMock.Verify(LogLevel.Information, "Moved 2 task(s).");
+            _LoggerMock.Verify(LogLevel.Information, "Moved tasks. Count: 2");
             VerifyNoOtherCalls();
         }
 
@@ -167,7 +167,7 @@ namespace TodoTxtDaemon.UnitTests
             _DateTimeProviderMock.Verify(d => d.Adjust(It.IsAny<DateTime>()), Times.Once);
             _ConfigurationMock.Verify("TodoTxtPath", "DoneTxtPath");
             _LoggerMock.Verify(m => m.IsEnabled(LogLevel.Information), Times.Once);
-            _LoggerMock.Verify(LogLevel.Information, "Moved 2 task(s).");
+            _LoggerMock.Verify(LogLevel.Information, "Moved tasks. Count: 2");
             VerifyNoOtherCalls();
         }
 

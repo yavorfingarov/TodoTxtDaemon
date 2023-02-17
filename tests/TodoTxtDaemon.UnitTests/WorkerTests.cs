@@ -17,8 +17,7 @@ namespace TodoTxtDaemon.UnitTests
         public WorkerTests()
         {
             _LoggerMock = new Mock<ILogger<Worker>>(MockBehavior.Strict);
-            _LoggerMock.Setup(mbox => mbox.IsEnabled(It.IsAny<LogLevel>()))
-                .Returns(true);
+            _LoggerMock.Setup(l => l.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
             _LoggerMock.Setup(LogLevel.Information);
             _LoggerMock.Setup(LogLevel.Error);
             _LoggerMock.Setup(LogLevel.Critical);
@@ -113,16 +112,31 @@ namespace TodoTxtDaemon.UnitTests
             VerifyNoOtherCalls();
         }
 
+        [Fact]
+        public async Task ExecuteAsync_Stops_WhenApplicationIsTerminated()
+        {
+            _WatcherMock.Setup(w => w.IsTimeToRun()).Returns(false);
+            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMilliseconds(300));
+
+            await ExecuteAsync(cancellationTokenSource.Token);
+
+            VerifyCommonInvocations();
+            VerifyNoOtherCalls();
+        }
+
         public void Dispose()
         {
             _Worker.Dispose();
         }
 
-        private async Task ExecuteAsync()
+        private async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            await _Worker.StartAsync(CancellationToken.None);
-            await Task.Delay(500);
-            await _Worker.StopAsync(CancellationToken.None);
+            await _Worker.StartAsync(cancellationToken);
+            await Task.Delay(500, CancellationToken.None);
+            if (cancellationToken == default)
+            {
+                await _Worker.StopAsync(CancellationToken.None);
+            }
         }
 
         private void VerifyCommonInvocations(int monitoringLogCalls = 1)
@@ -130,7 +144,8 @@ namespace TodoTxtDaemon.UnitTests
             _LoggerMock.Verify(m => m.IsEnabled(It.IsAny<LogLevel>()), Times.AtLeastOnce);
             _LoggerMock.Verify(LogLevel.Information, "Monitoring...", Times.Exactly(monitoringLogCalls));
             var version = typeof(Program).Assembly.GetName().Version?.ToString(3);
-            _LoggerMock.Verify(LogLevel.Information, $"TodoTxtDaemon {version} started. Process Id: ");
+            _LoggerMock.Verify(LogLevel.Information, $"Daemon started. Version: {version} / Process Id: {Environment.ProcessId}");
+            _LoggerMock.Verify(LogLevel.Information, $"Daemon stopped. Process Id: {Environment.ProcessId}");
             _WatcherMock.Verify(w => w.IsTimeToRun(), Times.Once);
         }
 

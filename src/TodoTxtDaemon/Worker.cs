@@ -20,9 +20,9 @@ namespace TodoTxtDaemon
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _Logger.LogApplicationStarted(GetType().Assembly.GetName().Version?.ToString(3), Environment.ProcessId);
-            _Logger.LogMonitoringStatus();
-            while (!stoppingToken.IsCancellationRequested)
+            _Logger.LogApplicationStarted();
+            _Logger.LogMonitoring();
+            do
             {
                 try
                 {
@@ -30,47 +30,45 @@ namespace TodoTxtDaemon
                     {
                         _Watcher.MarkRun();
                         _Mover.Run();
-                        _Logger.LogMonitoringStatus();
+                        _Logger.LogMonitoring();
                     }
+                }
+                catch (MoverException ex)
+                {
+                    _Logger.LogErrorMessage(ex);
+                    _Logger.LogMonitoring();
                 }
                 catch (Exception ex)
                 {
-                    if (IsCriticalException(ex))
-                    {
-                        break;
-                    }
-                    _Logger.LogMonitoringStatus();
+                    _Logger.LogCriticalError(ex);
+                    _Lifetime.StopApplication();
                 }
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-            }
-            _Lifetime.StopApplication();
+            } while (await IsWaiting(stoppingToken));
+            _Logger.LogApplicationStopped();
         }
 
-        private bool IsCriticalException(Exception exception)
+        private static async Task<bool> IsWaiting(CancellationToken cancellationToken)
         {
-            var isCritical = false;
-            switch (exception)
+            try
             {
-                case MoverException:
-                    _Logger.LogErrorMessage(exception.Message);
-                    break;
-                default:
-                    _Logger.LogCriticalError(exception);
-                    isCritical = true;
-                    break;
-            }
+                await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
 
-            return isCritical;
+                return true;
+            }
+            catch (OperationCanceledException)
+            {
+                return false;
+            }
         }
     }
 
     internal static partial class LoggerExtensions
     {
-        private static readonly Action<ILogger, string?, int, Exception?> _ApplicationStarted = LoggerMessage.Define<string?, int>(
+        private static readonly Action<ILogger, string?, int, Exception?> _DaemonStarted = LoggerMessage.Define<string?, int>(
             LogLevel.Information, default,
-            "TodoTxtDaemon {Version} started. Process Id: {ProcessId}");
+            "Daemon started. Version: {Version} / Process Id: {ProcessId}");
 
-        private static readonly Action<ILogger, Exception?> _MonitoringStatus = LoggerMessage.Define(
+        private static readonly Action<ILogger, Exception?> _Monitoring = LoggerMessage.Define(
             LogLevel.Information, default,
             "Monitoring...");
 
@@ -82,24 +80,34 @@ namespace TodoTxtDaemon
             LogLevel.Critical, default,
             "Unhandled exception.");
 
-        public static void LogApplicationStarted(this ILogger logger, string? version, int processId)
+        private static readonly Action<ILogger, int, Exception?> _DaemonStopped = LoggerMessage.Define<int>(
+            LogLevel.Information, default,
+            "Daemon stopped. Process Id: {ProcessId}");
+
+        public static void LogApplicationStarted(this ILogger logger)
         {
-            _ApplicationStarted(logger, version, processId, null);
+            var version = typeof(LoggerExtensions).Assembly.GetName().Version?.ToString(3);
+            _DaemonStarted(logger, version, Environment.ProcessId, null);
         }
 
-        public static void LogMonitoringStatus(this ILogger logger)
+        public static void LogMonitoring(this ILogger logger)
         {
-            _MonitoringStatus(logger, null);
+            _Monitoring(logger, null);
         }
 
-        public static void LogErrorMessage(this ILogger logger, string message)
+        public static void LogErrorMessage(this ILogger logger, MoverException exception)
         {
-            _ErrorMessage(logger, message, null);
+            _ErrorMessage(logger, exception.Message, null);
         }
 
         public static void LogCriticalError(this ILogger logger, Exception exception)
         {
             _CriticalError(logger, exception);
+        }
+
+        public static void LogApplicationStopped(this ILogger logger)
+        {
+            _DaemonStopped(logger, Environment.ProcessId, null);
         }
     }
 }

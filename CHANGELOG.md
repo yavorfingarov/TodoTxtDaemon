@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.5] - 2023-02-17
+### Added
+- Logging improvements
+
 ## [1.2.4] - 2023-02-16
 ### Added
 - Deterministic build
