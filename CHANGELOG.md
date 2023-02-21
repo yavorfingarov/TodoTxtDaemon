@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.6] - 2023-02-21
+### Fixed
+- Updated dependencies
+
 ## [1.2.5] - 2023-02-17
 ### Added
 - Logging improvements
